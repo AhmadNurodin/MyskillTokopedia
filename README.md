@@ -52,7 +52,7 @@ SELECT
 ### Data Cleaning/Preparation
 
 In the initial data preparation phase, we performed the following task:
-1. Data loading and inspaction.
+1. Data loading and inspection.
 2. handling missing values.
 3. Data cleaning and formatting.
 
