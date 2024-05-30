@@ -1,9 +1,9 @@
 # E-COMMERCE SALES ANALYSIST
 
-### Project Overview
+## Project Overview
 This final project data analysis project aims to provide insight into the sales performance of an e-commerce company over past year. By analyzing various aspects of the sales data, we seek to identify trends, make data driven recommendations, and gain a deeper understanding of the company's performance
 
-### Relational Database Schema
+## Relational Database Schema
 
 ![schema table](https://github.com/AhmadNurodin/Myskill-Tokopedia-SQL/assets/161307267/c4ba7b0c-2e8e-4602-a36b-ead7708622a7)
 
@@ -44,17 +44,29 @@ SELECT
   LEFT JOIN
   payment_detail as pd on od.payment_id = pd.id
 ```
-### Tools 
+## Tools 
 
 - Excel - Data Cleaning
 - Google Bigquery - Data Analysis
 
-### Data Cleaning/Preparation
+## Data Cleaning/Preparation
 
 In the initial data preparation phase, we performed the following task:
 1. Data loading and inspection.
 2. Handling missing values.
 3. Data cleaning and formatting.
+
+## Exploratory Data Analysis
+
+Exploratory Data Analysis involved exploring the sales data to answer key questions, such as:
+
+- Find Top Transaction in 2021, by month
+- Find Top Transaction in 2022 By Product Category
+- By Category, compare transaction between 2021 and 2022, find which groups experienced increases and decreases
+- Base on order, find top 5 payment methode mostly used
+- Sort by transaction value on this group of product (Samsung, Apple, Sony, Huawei, Lenovo)
+
+## Data Analysis
 
 ### Find Top Transaction in 2021, by month
 
@@ -68,34 +80,11 @@ GROUP BY 1
 ORDER BY 2 DESC
 limit 1 
 ```
+Result
+Based on the query result, we can conclude that in the 8th month or August the total transaction value was 227862744.0, which is the largest in 2021.
 
 
-## Find Top Transaction in 2022 By Product Category
-
-```sql
-SELECT
-kategori
-total_transaksi_2021
-total_transaksi_2022,
-CASE WHEN total_transaksi_2022 = total_transaksi_2021 < 0 then 'Penurunan'
-ELSE 'Kenaikan'
-END AS perubahan_transaksi
-FROM(
-SELECT
-sd.category AS kategori,
-SUM(CASE WHEN EXTRACT(year from od.order_date)= 2021 then after_discount end) as total_transaksi_2021,
-SUM(CASE WHEN EXTRACT(year from od.order_date)= 2022 then after discount end) as total_transaksi_2022,
-from `Final_project.order_detail` AS od
-LEFT JOIN `Final_project.sku_detail` AS sd
-ON od.sku_id = sd.id
-WHERE EXTRACT(year from od.order_date) IN (2021,2022) AND od.is_valid = 1
-Group BY 1
-)
-ORDER BY 4
-```
-
-
-## By Category, compare transaction between 2021 and 2022, find which groups experienced increases and decreases
+### Find Top Transaction in 2022 By Product Category
 
 ```sql
 SELECT
@@ -120,7 +109,33 @@ ORDER BY 4
 ```
 
 
-## Base on order, find top 5 payment methode mostly used
+### By Category, compare transaction between 2021 and 2022, find which groups experienced increases and decreases
+
+```sql
+SELECT
+kategori
+total_transaksi_2021
+total_transaksi_2022,
+CASE WHEN total_transaksi_2022 = total_transaksi_2021 < 0 then 'Penurunan'
+ELSE 'Kenaikan'
+END AS perubahan_transaksi
+FROM(
+SELECT
+sd.category AS kategori,
+SUM(CASE WHEN EXTRACT(year from od.order_date)= 2021 then after_discount end) as total_transaksi_2021,
+SUM(CASE WHEN EXTRACT(year from od.order_date)= 2022 then after discount end) as total_transaksi_2022,
+from `Final_project.order_detail` AS od
+LEFT JOIN `Final_project.sku_detail` AS sd
+ON od.sku_id = sd.id
+WHERE EXTRACT(year from od.order_date) IN (2021,2022) AND od.is_valid = 1
+Group BY 1
+)
+ORDER BY 4
+```
+Result
+Based on the query results, there are Appliances, Computing, Superstore, Mobile & Tablets, Health & Sport, Women Fashion, Entertainment, Home & Living, Men Fashion, Beauty & Grooming, School & Education, Soghaat, Kids & Baby categories increase and Others and Books decreases in transaction value from 2021 to 2022.
+
+### Base on order, find top 5 payment methode mostly used
 
 ```sql
 SELECT
@@ -134,9 +149,11 @@ GROUP BY 1
 ORDER BY 2 DESC
 Limit 5
 ```
+Result
+Based on the query results , the top 5 most popular payment methods used during 2022 are COD, Payaxis, CustomerCredit, Easypay, and Jazzwallet.
 
 
-## Sort by transaction value on this group of product (Samsung, Apple, Sony, Huawei, Lenovo)
+### Sort by transaction value on this group of product (Samsung, Apple, Sony, Huawei, Lenovo)
 
 ```sql
 WITH Top_Produk as (
@@ -161,4 +178,5 @@ SELECT*
 FROM Top_Produk
 WHERE nama_produk is not null
 ```
-
+Result
+Based on the query result, the following is the order of transaction values ​​based on product. Data is sorted based on the highest transaction value.
