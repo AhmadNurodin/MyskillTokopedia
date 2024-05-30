@@ -42,12 +42,12 @@ SELECT
   LEFT JOIN
   sku_detail as sd ON od.sku_id = sd.id
   LEFT JOIN
-  payment_detail as pd on od.payment_id = pd.id
+  payment_detail as pd on od.payment_id = pd.id;
 ```
 ## Tools 
 
 - Excel - Data Cleaning
-- Google Bigquery - Data Analysis
+- Postgre SQL - Data Analysis
 
 ## Data Cleaning/Preparation
 
@@ -74,63 +74,73 @@ Exploratory Data Analysis involved exploring the sales data to answer key questi
 SELECT
 extract (month from order_date) as bulan,
 sum(after_discount) as total_transaksi
-FROM `Final_project.order_detail`
+FROM order_detail
 WHERE extract (year from order_date) = 2021 and is_valid = 1
 GROUP BY 1
 ORDER BY 2 DESC
-limit 1 
+limit 1;
 ```
 Result
-Based on the query result, we can conclude that in the 8th month or August the total transaction value was 227862744.0, which is the largest in 2021.
+Based on the query result, we can conclude that in **August** with **total transaction value 227862744.0**, which is the largest in 2021.
 
 
 ### Find Top Transaction in 2022 By Product Category
 
 ```sql
-SELECT
-kategori
-total_transaksi_2021
-total_transaksi_2022,
-CASE WHEN total_transaksi_2022 = total_transaksi_2021 < 0 then 'Penurunan'
-ELSE 'Kenaikan'
-END AS perubahan_transaksi
-FROM(
-SELECT
-sd.category AS kategori,
-SUM(CASE WHEN EXTRACT(year from od.order_date)= 2021 then after_discount end) as total_transaksi_2021,
-SUM(CASE WHEN EXTRACT(year from od.order_date)= 2022 then after discount end) as total_transaksi_2022,
-from `Final_project.order_detail` AS od
-LEFT JOIN `Final_project.sku_detail` AS sd
-ON od.sku_id = sd.id
-WHERE EXTRACT(year from od.order_date) IN (2021,2022) AND od.is_valid = 1
-Group BY 1
-)
-ORDER BY 4
+SELECT 
+EXTRACT(
+YEAR FROM od.order_date) as Year, 
+sd.category, 
+SUM(ROUND(od.after_discount)) as Total_transaction  
+FROM 
+order_detail as od
+JOIN sku_detail as sd ON sd.Id = od.sku_id
+WHERE 
+EXTRACT(YEAR FROM od.order_date) = 2022
+AND od.is_valid = 1
+GROUP BY 
+EXTRACT(
+YEAR FROM od.order_date), 
+sd.category
+ORDER BY 
+Total_transaction 
+DESC
+Limit 1;
 ```
+Based on the query result, we can conclude Top Transaction in 2022 By Product Category is **Mobiles & Tablets**
 
 
 ### By Category, compare transaction between 2021 and 2022, find which groups experienced increases and decreases
 
 ```sql
 SELECT
-kategori
-total_transaksi_2021
+kategori,
+total_transaksi_2021,
 total_transaksi_2022,
-CASE WHEN total_transaksi_2022 = total_transaksi_2021 < 0 then 'Penurunan'
+CASE 
+WHEN total_transaksi_2022 < total_transaksi_2021 THEN 'Penurunan'
 ELSE 'Kenaikan'
 END AS perubahan_transaksi
-FROM(
+FROM (
 SELECT
 sd.category AS kategori,
-SUM(CASE WHEN EXTRACT(year from od.order_date)= 2021 then after_discount end) as total_transaksi_2021,
-SUM(CASE WHEN EXTRACT(year from od.order_date)= 2022 then after discount end) as total_transaksi_2022,
-from `Final_project.order_detail` AS od
-LEFT JOIN `Final_project.sku_detail` AS sd
-ON od.sku_id = sd.id
-WHERE EXTRACT(year from od.order_date) IN (2021,2022) AND od.is_valid = 1
-Group BY 1
-)
-ORDER BY 4
+SUM(CASE WHEN EXTRACT(year FROM od.order_date) = 2021 THEN od.after_discount ELSE 0 END) AS total_transaksi_2021,
+SUM(CASE WHEN EXTRACT(year FROM od.order_date) = 2022 THEN od.after_discount ELSE 0 END) AS total_transaksi_2022
+FROM 
+order_detail AS od
+LEFT JOIN 
+sku_detail AS sd ON od.sku_id = sd.id
+WHERE 
+EXTRACT(year FROM od.order_date) IN (2021, 2022) AND od.is_valid = 1
+GROUP BY 
+sd.category
+) AS subquery
+ORDER BY 
+    CASE 
+        WHEN total_transaksi_2022 < total_transaksi_2021 THEN 'Penurunan'
+        ELSE 'Kenaikan'
+    END;
+
 ```
 Result
 Based on the query results, there are Appliances, Computing, Superstore, Mobile & Tablets, Health & Sport, Women Fashion, Entertainment, Home & Living, Men Fashion, Beauty & Grooming, School & Education, Soghaat, Kids & Baby categories increase and Others and Books decreases in transaction value from 2021 to 2022.
@@ -139,44 +149,56 @@ Based on the query results, there are Appliances, Computing, Superstore, Mobile 
 
 ```sql
 SELECT
-pd.payment_method as metode
-COUNT(DISTINCT od.id) as total_unique_order
-FROM `Final_project.order_detail` od
-LEFT JOIN `Final_project.payment_detail` pd
-ON od.payment_id = pd.id
-WHERE EXTRACT(year from od.order_date) = 2022 and od.is_valid = 1
-GROUP BY 1
-ORDER BY 2 DESC
-Limit 5
+    pd.payment_method as metode,
+    COUNT(DISTINCT od.id) as total_unique_order
+FROM 
+    order_detail od
+LEFT JOIN 
+    payment_detail pd
+ON 
+    od.payment_id = pd.id
+WHERE 
+    EXTRACT(year FROM od.order_date) = 2022 
+    AND od.is_valid = 1
+GROUP BY 
+    pd.payment_method
+ORDER BY 
+    total_unique_order DESC
+LIMIT 5;
 ```
 Result
-Based on the query results , the top 5 most popular payment methods used during 2022 are COD, Payaxis, CustomerCredit, Easypay, and Jazzwallet.
+Based on the query results , the top 5 most popular payment methods used during 2022 are **COD, Payaxis, CustomerCredit, Easypay, and Jazzwallet.**
 
 
 ### Sort by transaction value on this group of product (Samsung, Apple, Sony, Huawei, Lenovo)
 
 ```sql
 WITH Top_Produk as (
-SELECT
-CASE
-WHEN Lower(sd.sku_name) like `%samsung%` then `samsung`
-WHEN lower(sd.sku_name) like `%apple%` or lower (sd.sku_name)
-like `%iphone%` or lower (sd.sku_name) like `%macbook%` then `apple`
-WHEN lower (sd.sku_name) like `%sony%` then `sony`
-WHEN lower (sd.sku_name) like `%huawei%` then `huawei`
-WHEN lower (sd.sku_nname) like `%lenovo%` then `lenovo`
-END AS nama_produk
-SUM(after_discount) as nilai_transaksi
-FROM `Final_project.order_detail` od
-LEFT JOIN `Final_project.sku_detail` sd
-ON od.sku_id = sd.id
-WHERE is_valid = 1
-GROUP BY 1
-ORDER BY 2 DESC
+    SELECT
+        CASE
+            WHEN LOWER(sd.sku_name) LIKE '%samsung%' THEN 'samsung'
+            WHEN LOWER(sd.sku_name) LIKE '%apple%' OR LOWER(sd.sku_name) LIKE '%iphone%' OR LOWER(sd.sku_name) LIKE '%macbook%' THEN 'apple'
+            WHEN LOWER(sd.sku_name) LIKE '%sony%' THEN 'sony'
+            WHEN LOWER(sd.sku_name) LIKE '%huawei%' THEN 'huawei'
+            WHEN LOWER(sd.sku_name) LIKE '%lenovo%' THEN 'lenovo'
+        END AS nama_produk,
+        SUM(after_discount) as nilai_transaksi
+    FROM 
+        order_detail od
+    LEFT JOIN 
+        sku_detail sd
+    ON 
+        od.sku_id = sd.id
+    WHERE 
+        is_valid = 1
+    GROUP BY 
+        nama_produk
+    ORDER BY 
+        nilai_transaksi DESC
 )
-SELECT*
+SELECT *
 FROM Top_Produk
-WHERE nama_produk is not null
+WHERE nama_produk IS NOT NULL;
 ```
 Result
 Based on the query result, the following is the order of transaction values ​​based on product. Data is sorted based on the highest transaction value.
