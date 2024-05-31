@@ -1,5 +1,17 @@
 # E-COMMERCE SALES ANALYSIST
 
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Relational Database Schema](#relational-database-schema)
+- [Data Sources](#data-sources)
+- [Tools](#tools)
+- [Data Cleaning and Preparation](#data-cleaning-and-preparation)
+- [Exploratory Data Analysis](#exploratory-data-analysis)
+- [Data Analysis](#data-analysis)
+- [Results](#results)
+- [Recommendations](#recommendations)
+
 ## Project Overview
 This final project data analysis project aims to provide insight into the sales performance of an e-commerce company over past year. By analyzing various aspects of the sales data, we seek to identify trends, make data driven recommendations, and gain a deeper understanding of the company's performance
 
@@ -8,7 +20,7 @@ This final project data analysis project aims to provide insight into the sales 
 ![schema table](https://github.com/AhmadNurodin/Myskill-Tokopedia-SQL/assets/161307267/c4ba7b0c-2e8e-4602-a36b-ead7708622a7)
 
 
-### Data Sources
+## Data Sources
 customer_detail [Download here](https://drive.google.com/file/d/1iRonHkbVSz9p1PtHS8lPFWSHhg7knyVq/view?usp=sharing)        
 order_detail [Download here](https://drive.google.com/file/d/1asKIIjJLCeYVlL3E3GrFk5uRbVlRntTj/view?usp=sharing)        
 payment_detail [Download here](https://drive.google.com/file/d/1NEVvGR72B22191DP5zsd_P6_JZQLwzJd/view?usp=sharing)        
@@ -49,7 +61,7 @@ SELECT
 - Excel - Data Cleaning
 - Postgre SQL - Data Analysis
 
-## Data Cleaning/Preparation
+## Data Cleaning and Preparation
 
 In the initial data preparation phase, we performed the following task:
 1. Data loading and inspection.
@@ -202,4 +214,5 @@ The analysis results are sumarized as follows:
 
 ## Recommendations
 Based on the analysis, we recommend the following actions:
-1. 
+1. Invest in marketing and promotions before and during august to maximize revenue.
+2. focus on expanding and promoting products in category Mobiles & Tablets.
