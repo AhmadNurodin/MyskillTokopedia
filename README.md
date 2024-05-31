@@ -80,9 +80,6 @@ GROUP BY 1
 ORDER BY 2 DESC
 limit 1;
 ```
-Result
-Based on the query result, we can conclude that in **August** with **total transaction value 227862744.0**, which is the largest in 2021.
-
 
 ### Find Top Transaction in 2022 By Product Category
 
@@ -107,8 +104,6 @@ Total_transaction
 DESC
 Limit 1;
 ```
-Based on the query result, we can conclude Top Transaction in 2022 By Product Category is **Mobiles & Tablets**
-
 
 ### By Category, compare transaction between 2021 and 2022, find which groups experienced increases and decreases
 
@@ -142,8 +137,6 @@ ORDER BY
     END;
 
 ```
-Result
-Based on the query results, there are Appliances, Computing, Superstore, Mobile & Tablets, Health & Sport, Women Fashion, Entertainment, Home & Living, Men Fashion, Beauty & Grooming, School & Education, Soghaat, Kids & Baby categories increase and Others and Books decreases in transaction value from 2021 to 2022.
 
 ### Base on order, find top 5 payment methode mostly used
 
@@ -166,9 +159,6 @@ ORDER BY
     total_unique_order DESC
 LIMIT 5;
 ```
-Result
-Based on the query results , the top 5 most popular payment methods used during 2022 are **COD, Payaxis, CustomerCredit, Easypay, and Jazzwallet.**
-
 
 ### Sort by transaction value on this group of product (Samsung, Apple, Sony, Huawei, Lenovo)
 
@@ -200,5 +190,16 @@ SELECT *
 FROM Top_Produk
 WHERE nama_produk IS NOT NULL;
 ```
-Result
-Based on the query result, the following is the order of transaction values ​​based on product. Data is sorted based on the highest transaction value.
+
+## Results
+The analysis results are sumarized as follows:
+1. The company's sales peak in August with total transaction value 227862744.0, which is the largest in 2021.
+2. Product Category Mobiles & Tablets is the top transaction in 2022.
+3. The company's sales have been a lot of increasing over the past year, there are Appliances, Computing, Superstore, Mobile & Tablets, Health & Sport, Women Fashion, Entertainment, Home & Living, Men Fashion, Beauty & Grooming, School & Education, Soghaat, Kids & Baby categories increase and there was a decreases transaction value from 2021 to 2022 there are Others and Books.
+4. The top 5 most popular payment methods used during 2022 are COD, Payaxis, CustomerCredit, Easypay, and Jazzwallet.
+5. The following is the order of transaction values ​​based on product are samsung, apple, sony, huawei and lenovo.
+
+
+## Recommendations
+Based on the analysis, we recommend the following actions:
+1. 
